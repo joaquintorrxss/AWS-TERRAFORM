@@ -1,0 +1,20 @@
+﻿# Terraform
+.terraform/
+*.tfstate
+*.tfstate.*
+*.tfplan
+
+# Variables locales
+*.tfvars
+!*.tfvars.example
+
+# AWS credentials
+.aws/
+
+# Lambda
+node_modules/
+*.zip
+
+# IDE
+.vscode/
+.idea/
