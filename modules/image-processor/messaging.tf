@@ -38,3 +38,44 @@ resource "aws_sqs_queue" "image_processing" {
     Project     = "image-processor"
   }
 }
+
+# ============================================================
+# POLITICA S3 -> SQS
+# ============================================================
+
+data "aws_iam_policy_document" "s3_to_sqs" {
+  statement {
+    sid    = "AllowS3ToSendMessages"
+    effect = "Allow"
+
+    principals {
+      type        = "Service"
+      identifiers = ["s3.amazonaws.com"]
+    }
+
+    actions = [
+      "sqs:SendMessage"
+    ]
+
+    resources = [
+      aws_sqs_queue.image_processing.arn
+    ]
+
+    condition {
+      test     = "ArnEquals"
+      variable = "aws:SourceArn"
+      values   = [aws_s3_bucket.images.arn]
+    }
+
+    condition {
+      test     = "StringEquals"
+      variable = "aws:SourceAccount"
+      values   = [data.aws_caller_identity.current.account_id]
+    }
+  }
+}
+
+resource "aws_sqs_queue_policy" "s3_to_sqs" {
+  queue_url = aws_sqs_queue.image_processing.id
+  policy    = data.aws_iam_policy_document.s3_to_sqs.json
+}

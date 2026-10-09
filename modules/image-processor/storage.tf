@@ -46,3 +46,25 @@ resource "aws_s3_bucket_server_side_encryption_configuration" "images" {
     }
   }
 }
+
+# ============================================================
+# NOTIFICACION S3 -> SQS
+# ============================================================
+
+resource "aws_s3_bucket_notification" "uploads" {
+  bucket = aws_s3_bucket.images.id
+
+  queue {
+    queue_arn = aws_sqs_queue.image_processing.arn
+
+    events = [
+      "s3:ObjectCreated:*"
+    ]
+
+    filter_prefix = local.uploads_prefix
+  }
+
+  depends_on = [
+    aws_sqs_queue_policy.s3_to_sqs
+  ]
+}
