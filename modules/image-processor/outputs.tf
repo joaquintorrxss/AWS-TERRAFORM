@@ -35,3 +35,33 @@ output "s3_endpoint_id" {
   description = "ID del Gateway Endpoint de S3"
   value       = aws_vpc_endpoint.s3.id
 }
+
+output "bucket_name" {
+  description = "Nombre del bucket utilizado para almacenar imagenes"
+  value       = aws_s3_bucket.images.id
+}
+
+output "uploads_prefix" {
+  description = "Prefijo utilizado para las imagenes originales"
+  value       = local.uploads_prefix
+}
+
+output "processed_prefix" {
+  description = "Prefijo utilizado para las imagenes procesadas"
+  value       = local.processed_prefix
+}
+
+output "image_processing_queue_url" {
+  description = "URL de la cola principal de procesamiento"
+  value       = aws_sqs_queue.image_processing.id
+}
+
+output "image_processing_queue_arn" {
+  description = "ARN de la cola principal de procesamiento"
+  value       = aws_sqs_queue.image_processing.arn
+}
+
+output "image_processing_dlq_url" {
+  description = "URL de la Dead Letter Queue"
+  value       = aws_sqs_queue.image_processing_dlq.id
+}
